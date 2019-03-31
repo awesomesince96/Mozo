@@ -6,12 +6,10 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.TextView;
 
 public class CentralActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
-    private TextView mTextMessage;
-
+    private final int REQUEST_PERMISSION=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +39,9 @@ public class CentralActivity extends AppCompatActivity implements BottomNavigati
             Fragment fragment = null;
 
             switch (item.getItemId()){
+                case R.id.navigation_nearby:
+                    fragment = new Nearby_Fragment();
+                    break;
                 case R.id.navigation_explore:
                     fragment = new Explore_Fragment();
                     break;
