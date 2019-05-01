@@ -23,6 +23,14 @@
           }
         },
         {
+          "client_id": "449022652595-emb241uciqusb19u8ttfb9vnfahgcd41.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mozo",
+            "certificate_hash": "127c3335c22bce257cfa78ca29106117dabd1556"
+          }
+        },
+        {
           "client_id": "449022652595-kde4p3lb32gpjdrrlp91115506r7a462.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -33,20 +41,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "449022652595-kde4p3lb32gpjdrrlp91115506r7a462.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     },
@@ -77,20 +78,13 @@
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 2,
           "other_platform_oauth_client": [
             {
               "client_id": "449022652595-kde4p3lb32gpjdrrlp91115506r7a462.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
-        },
-        "ads_service": {
-          "status": 2
         }
       }
     }
