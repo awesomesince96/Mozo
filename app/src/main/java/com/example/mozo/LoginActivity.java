@@ -99,7 +99,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
+                //.requestIdToken(getString(R.string.default_web_client_id))
+                .requestIdToken("449022652595-gqvjcra7noets56cusmfohl9h0ru0i2e.apps.googleusercontent.com")
                 .requestEmail()
                 .build();
 
