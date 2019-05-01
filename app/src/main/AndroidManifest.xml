@@ -19,11 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".APIActivity">
-        </activity>
-        <activity android:name=".CentralActivity"
-            android:label="@string/title_activity_central">
-        </activity>
+        <activity android:name=".ImagesActivity"></activity>
+        <activity android:name=".APIActivity"></activity>
+        <activity
+            android:name=".CentralActivity"
+            android:label="@string/title_activity_central"></activity>
         <activity android:name=".AuthActivity" />
         <activity
             android:name=".LoginActivity"
