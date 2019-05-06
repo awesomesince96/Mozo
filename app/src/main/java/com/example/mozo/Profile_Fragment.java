@@ -24,6 +24,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
@@ -42,6 +44,7 @@ import java.io.FileNotFoundException;
 public class Profile_Fragment extends Fragment {
 
     View view;
+    String userid;
     private Button mButtonChooseImage;
     private Button mButtonUpload;
     private Button mButtonShowUploads;
@@ -69,8 +72,10 @@ public class Profile_Fragment extends Fragment {
         //mEditTextFileName = (EditText) view.findViewById(R.id.edit_text_file_name);
         mImageView = view.findViewById(R.id.imageView);
         mProgressBar = view.findViewById(R.id.progressBar);
-        mStorageRef = FirebaseStorage.getInstance().getReference("user_id_1");
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference("uploads");
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
+        userid = account.getId();
+        mStorageRef = FirebaseStorage.getInstance().getReference(userid);
+        mDatabaseRef = FirebaseDatabase.getInstance().getReference(userid);
 
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +226,7 @@ public class Profile_Fragment extends Fragment {
 
     private void openImagesActivity() {
         Intent intent = new Intent(getActivity().getApplicationContext(), ImagesActivity.class);
+        intent.putExtra("userid",userid);
         startActivity(intent);
     }
 }
