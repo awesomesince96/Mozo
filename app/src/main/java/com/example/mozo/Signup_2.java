@@ -1,6 +1,14 @@
 package com.example.mozo;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +19,7 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -27,14 +36,18 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class Signup_2 extends AppCompatActivity implements View.OnClickListener {
+public class Signup_2 extends AppCompatActivity implements View.OnClickListener, LocationListener {
 
     private RangeBar rangeBar;
     private RadioGroup gender;
     private RangeBar range;
     private Button next;
     private String id;
+    public static Context context;
     private User user;
+    APIServices apiServices = new APIServices();
+    LocationManager locationManager;
+    LocationListener locationListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +58,18 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
         rangeBar = findViewById(R.id.signup_age_bar);
         range = findViewById(R.id.signup_distance_bar);
         next = findViewById(R.id.btn_signup2_next);
-
         next.setOnClickListener(this);
+        context = getApplicationContext();
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
 
-//        range = findViewById(R.id.signup_distance_bar);
+        getLocation();
 
         rangeBar.setOnRangeBarChangeListener(new RangeBar.OnRangeBarChangeListener() {
             @Override
             public void onRangeChangeListener(RangeBar rangeBar, int leftPinIndex, int rightPinIndex, String leftPinValue, String rightPinValue) {
-                    user.setMin_age(leftPinValue);
-                    user.setMax_age(rightPinValue);
+                user.setMin_age(leftPinValue);
+                user.setMax_age(rightPinValue);
             }
 
             @Override
@@ -84,6 +99,29 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
 
             }
         });
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+
+//        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,     0, this);
+    }
+
+    void getLocation() {
+        try {
+            locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000, 5, this);
+        }
+        catch(SecurityException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -91,48 +129,19 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
         switch (view.getId()){
             case R.id.btn_signup2_next:
                 setModel();
-                createUser();
+                if(user.getLat() != null){
+                    apiServices.createUser(context,id,user);
+                    Intent intent = new Intent(Signup_2.this, CentralActivity.class);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
+                }
+
                 break;
         }
     }
 
-    private void createUser() {
-//        String url = "http://192.168.0.8:8080/api/saveUser";
-        String url = "http://10.0.0.52:8080/api/saveUser";
-        JSONObject jsonBody = new JSONObject();
-        Gson gson = new Gson();
-        ObjectMapper objectMapper = new ObjectMapper();
-        String jsonStr = "";
-        String userjson = gson.toJson(user);
-        Log.e("MYTAG","GSON"+gson.toJson(user));
-        Log.e("MYTAG","JACKSON"+jsonStr);
-        try {
-            jsonBody.put("id", id);
-            jsonBody.put("user", userjson);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.e("MYTAG", "___FINAL__");
-        Log.e("MYTAG", jsonBody.toString());
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("MYTAG", error.toString());
-                    }
-                }
-        );
-        requestQueue.add(jsonObjectRequest);
-    }
+
 
     private void setModel() {
 //        user.setRange(String.valueOf(range.getProgress()));
@@ -144,7 +153,6 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
             case "Male": user.setInterested_gender("1"); break;
             case "Other": user.setInterested_gender("3"); break;
         }
-
         Log.e("MYTAG",user.toString());
     }
 
@@ -155,6 +163,11 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
         user = (User) intent.getSerializableExtra("user");
         id = (String) intent.getSerializableExtra("id");
         Log.e("MYTAG",user.toString());
+        user.setMax_range("100");
+        user.setMin_age("18");
+        user.setMax_age("55");
+        user.setStatus("1");
+
 
 
     }
@@ -165,4 +178,28 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener 
     }
 
 
+    @Override
+    public void onLocationChanged(Location location) {
+        if (location != null) {
+            user.setLat(String.valueOf(location.getLatitude()));
+            user.setLng(String.valueOf(location.getLongitude()));
+            Log.e("MYTAG", location.getLatitude() + " and " + location.getLongitude());
+            locationManager.removeUpdates(this);
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
+    }
 }
