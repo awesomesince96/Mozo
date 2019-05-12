@@ -61,6 +61,8 @@ public class Profile_Fragment extends Fragment {
 
     private StorageTask mUploadTask;
 
+    static int imageNumber = 1;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -108,24 +110,6 @@ public class Profile_Fragment extends Fragment {
         return view;
     }
 
-    /*@Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.chooseImageButton:
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
-                break;
-
-            case R.id.uploadImageButton:
-                break;
-
-            case R.id.viewUploadButton:
-                break;
-        }
-    }*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -138,40 +122,6 @@ public class Profile_Fragment extends Fragment {
         }
     }
 
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1)
-            if (resultCode == Activity.RESULT_OK) {
-                Uri selectedImage = data.getData();
-
-                String filePath = getPath(selectedImage);
-                String file_extn = filePath.substring(filePath.lastIndexOf(".") + 1);
-                image_name_tv.setText(filePath);
-
-                try {
-                    if (file_extn.equals("img") || file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("gif") || file_extn.equals("png")) {
-                        //FINE
-                    } else {
-                        //NOT IN REQUIRED FORMAT
-                    }
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        column_index = cursor
-                .getColumnIndexOrThrow(MediaColumns.DATA);
-        cursor.moveToFirst();
-        imagePath = cursor.getString(column_index);
-
-        return cursor.getString(column_index);
-    }*/
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
@@ -181,9 +131,9 @@ public class Profile_Fragment extends Fragment {
 
     private void uploadFile() {
         if (mImageUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+            StorageReference fileReference = mStorageRef.child(imageNumber
                     + "." + getFileExtension(mImageUri));
-
+            imageNumber++;
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
