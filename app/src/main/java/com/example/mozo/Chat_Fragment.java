@@ -15,7 +15,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
-public class Chat_Fragment extends Fragment implements View.OnClickListener {
+public class Chat_Fragment extends Fragment {
 
     View view;
     TextView textView;
@@ -35,14 +35,14 @@ public class Chat_Fragment extends Fragment implements View.OnClickListener {
         return view;
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.logoutButton:
-                mGoogleSignInClient.signOut();
-                Intent intent = new Intent(getActivity().getApplicationContext(),AuthActivity.class);
-                startActivity(intent);
-                break;
-        }
-    }
+//    @Override
+//    public void onClick(View v) {
+//        switch (v.getId()){
+//            case R.id.logoutButton:
+//                mGoogleSignInClient.signOut();
+//                Intent intent = new Intent(getActivity().getApplicationContext(),AuthActivity.class);
+//                startActivity(intent);
+//                break;
+//        }
+//    }
 }

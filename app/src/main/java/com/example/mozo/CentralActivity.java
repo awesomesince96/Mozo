@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.gson.Gson;
 
 public class CentralActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -22,20 +23,29 @@ public class CentralActivity extends AppCompatActivity implements BottomNavigati
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_central);
 
+
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
         sharedPreferences = getSharedPreferences("s_p",MODE_PRIVATE);
         Gson gson = new Gson();
         String json = sharedPreferences.getString("user", null);
-        String json_id = sharedPreferences.getString("id", null);
-        User obj = gson.fromJson(json, User.class);
-        Log.e("MYTAG","PARENT: "+json_id+obj.toString());
+        if( json != null){
+            String json_id = sharedPreferences.getString("id", null);
+            Log.e("MYTAG","PARENT: "+json_id);
+        }else{
+            getUserProfile();
+        }
+    }
 
+    private void getUserProfile() {
+        APIServices apiServices = new APIServices();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        String id = auth.getCurrentUser().getUid();
+        apiServices.getUserProfile(this,id);
     }
 
     private boolean loadFragment(Fragment fragment){
         if(fragment != null){
-
             getSupportFragmentManager()
                     .beginTransaction()
                     .replace(R.id.fragment_container,fragment)

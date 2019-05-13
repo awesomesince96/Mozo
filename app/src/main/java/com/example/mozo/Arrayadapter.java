@@ -9,6 +9,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.squareup.picasso.Picasso;
+
 import java.util.List;
 
 public class Arrayadapter extends ArrayAdapter<User> {
@@ -28,9 +30,9 @@ public class Arrayadapter extends ArrayAdapter<User> {
 
         TextView name = (TextView) convertView.findViewById(R.id.image_name);
         ImageView image = (ImageView) convertView.findViewById(R.id.image_swipe);
-
+        String url = "https://firebasestorage.googleapis.com/v0/b/mozo-1ddd9.appspot.com/o/nHGSWUJKzvXIyPuKr43Qb6nkMmZ2%2F1.jpg?alt=media&token=cd7b07a4-000e-43f1-938e-8d01c2aa443b";
         name.setText(user_item.getName());
-        image.setImageResource(R.mipmap.pic);
+        Picasso.get().load(url).into(image);
 
         return  convertView;
 
