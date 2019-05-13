@@ -18,11 +18,11 @@ public class CentralActivity extends AppCompatActivity implements BottomNavigati
     SharedPreferences sharedPreferences;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_central);
-
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
@@ -55,6 +55,16 @@ public class CentralActivity extends AppCompatActivity implements BottomNavigati
         return false;
     }
 
+    public void setActionBarTitle(String title) {
+        getSupportActionBar().setTitle(title);
+    }
+
+    public void moveToEditProfile() {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container,new ProfileEdit_Fragment())
+                .commit();
+    }
 
 
     @Override

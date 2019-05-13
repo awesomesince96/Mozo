@@ -20,6 +20,8 @@ public class Nearby_Fragment extends Fragment {
                 ActivityCompat.checkSelfPermission(getContext(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION, android.Manifest.permission.ACCESS_FINE_LOCATION}, 0);
         }
+        ((CentralActivity) getActivity())
+                .setActionBarTitle("Explore Nearby");
 
         return inflater.inflate(R.layout.fragment_nearby_, null);
     }

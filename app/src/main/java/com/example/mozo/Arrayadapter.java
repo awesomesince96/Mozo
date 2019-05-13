@@ -32,7 +32,7 @@ public class Arrayadapter extends ArrayAdapter<User> {
         ImageView image = (ImageView) convertView.findViewById(R.id.image_swipe);
         String url = "https://firebasestorage.googleapis.com/v0/b/mozo-1ddd9.appspot.com/o/nHGSWUJKzvXIyPuKr43Qb6nkMmZ2%2F1.jpg?alt=media&token=cd7b07a4-000e-43f1-938e-8d01c2aa443b";
         name.setText(user_item.getName());
-        Picasso.get().load(url).into(image);
+        Picasso.get().load(user_item.getImage_url().get(0)).placeholder(R.mipmap.pic).into(image);
 
         return  convertView;
 

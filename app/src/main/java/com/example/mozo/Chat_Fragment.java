@@ -51,6 +51,9 @@ public class Chat_Fragment extends Fragment {
 
         db = FirebaseFirestore.getInstance();
 
+        ((CentralActivity) getActivity())
+                .setActionBarTitle("Matches");
+
         usersList = view.findViewById(R.id.usersList);
         noUsersText = view.findViewById(R.id.noUsersText);
 

@@ -47,7 +47,8 @@ public class Explore_Fragment extends Fragment {
         View view = inflater.inflate(R.layout.explore_fragment, null);
 
         getPeople();
-
+        ((CentralActivity) getActivity())
+                .setActionBarTitle("Explore");
 
 
 //        al = new ArrayList<>();
