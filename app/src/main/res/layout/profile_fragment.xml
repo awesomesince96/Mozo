@@ -34,14 +34,14 @@
 
 
     <!--<android.support.v7.widget.CardView-->
-        <!--android:id="@+id/view2"-->
-        <!--android:layout_width="80dp"-->
-        <!--android:layout_height="80dp"-->
-        <!--android:layout_centerHorizontal="true"-->
-        <!--android:elevation="12dp"-->
-        <!--app:cardCornerRadius="40dp"-->
-        <!--tools:layout_editor_absoluteX="204dp"-->
-        <!--tools:layout_editor_absoluteY="187dp">-->
+    <!--android:id="@+id/view2"-->
+    <!--android:layout_width="80dp"-->
+    <!--android:layout_height="80dp"-->
+    <!--android:layout_centerHorizontal="true"-->
+    <!--android:elevation="12dp"-->
+    <!--app:cardCornerRadius="40dp"-->
+    <!--tools:layout_editor_absoluteX="204dp"-->
+    <!--tools:layout_editor_absoluteY="187dp">-->
 
 
     <!--</android.support.v7.widget.CardView>-->

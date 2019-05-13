@@ -1,13 +1,10 @@
 package com.example.mozo;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -26,62 +23,63 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-public class Chat_Fragment extends Fragment {
+public class UserActivity extends AppCompatActivity {
 
     ListView usersList;
     TextView noUsersText;
     ArrayList<String> al = new ArrayList<>();
     int totalUsers = 0;
+    ProgressDialog pd;
 
-    View view;
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.chat_fragment, null);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_user);
 
-        usersList = view.findViewById(R.id.usersList);
-        noUsersText = view.findViewById(R.id.noUsersText);
+        usersList = (ListView)findViewById(R.id.usersList);
+        noUsersText = (TextView)findViewById(R.id.noUsersText);
+
+        pd = new ProgressDialog(UserActivity.this);
+        pd.setMessage("Loading...");
+        pd.show();
 
         String url = "https://mozo-1ddd9.firebaseio.com/users.json";
 
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>(){
             @Override
             public void onResponse(String s) {
                 doOnSuccess(s);
             }
-        }, new Response.ErrorListener() {
+        },new Response.ErrorListener(){
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 System.out.println("" + volleyError);
             }
         });
 
-        RequestQueue rQueue = Volley.newRequestQueue(getContext());
+        RequestQueue rQueue = Volley.newRequestQueue(UserActivity.this);
         rQueue.add(request);
 
         usersList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 UserDetails.chatWith = al.get(position);
-                startActivity(new Intent(getActivity().getApplicationContext(), ChatActivity.class));
+                startActivity(new Intent(UserActivity.this, ChatActivity.class));
             }
         });
-
-        return view;
     }
 
-    public void doOnSuccess(String s) {
+    public void doOnSuccess(String s){
         try {
             JSONObject obj = new JSONObject(s);
 
             Iterator i = obj.keys();
             String key = "";
 
-            while (i.hasNext()) {
+            while(i.hasNext()){
                 key = i.next().toString();
 
-                if (!key.equals(UserDetails.username)) {
+                if(!key.equals(UserDetails.username)) {
                     al.add(key);
                 }
 
@@ -92,14 +90,16 @@ public class Chat_Fragment extends Fragment {
             e.printStackTrace();
         }
 
-        if (totalUsers <= 1) {
+        if(totalUsers <=1){
             noUsersText.setVisibility(View.VISIBLE);
             usersList.setVisibility(View.GONE);
-        } else {
+        }
+        else{
             noUsersText.setVisibility(View.GONE);
             usersList.setVisibility(View.VISIBLE);
-            usersList.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_1, al));
+            usersList.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, al));
         }
 
-        }
+        pd.dismiss();
+    }
 }
