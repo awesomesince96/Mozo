@@ -20,6 +20,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
         <activity android:name=".EditProfile"></activity>
+        <activity android:name=".UserActivity"></activity>
+        <activity android:name=".ChatActivity" />
         <activity android:name=".Signup_2" />
         <activity android:name=".Signup_1" />
         <activity android:name=".ImagesActivity" />

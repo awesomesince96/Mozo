@@ -56,8 +56,8 @@ public class Profile_Fragment extends Fragment {
         if( json != null){
             user = gson.fromJson(json,User.class);
             if(user.getImage_url() != null){
-               String url =  user.getImage_url().get(0);
-               Picasso.get().load(url).into(profile_pic);
+                String url =  user.getImage_url().get(0);
+                Picasso.get().load(url).into(profile_pic);
             }
         }
     }

@@ -55,7 +55,7 @@ public class ImagesActivity extends AppCompatActivity {
         pathReference.getBytes(1024*1024*50).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
             public void onSuccess(byte[] bytes) {
-                
+
             }
         });
     }
