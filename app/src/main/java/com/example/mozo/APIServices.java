@@ -224,6 +224,8 @@ public class APIServices {
         requestQueue.add(jsonObjectRequest);
     }
 
+
+
 //    public boolean checkUsername1(Context context, User user) throws InterruptedException {
 //        StringBuilder stringBuilder = new StringBuilder();
 //        stringBuilder.append(Globals.url);
