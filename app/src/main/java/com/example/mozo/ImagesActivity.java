@@ -8,11 +8,15 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +29,7 @@ public class ImagesActivity extends AppCompatActivity {
     private ProgressBar mProgressCircle;
 
     private DatabaseReference mDatabaseRef;
+    private StorageReference mStorageReference;
     private List<Upload> mUploads;
 
     @Override
@@ -43,25 +48,14 @@ public class ImagesActivity extends AppCompatActivity {
         mUploads = new ArrayList<>();
 
         mDatabaseRef = FirebaseDatabase.getInstance().getReference(userid);
+        mStorageReference = FirebaseStorage.getInstance().getReference(userid);
 
-        mDatabaseRef.addValueEventListener(new ValueEventListener() {
+        StorageReference pathReference = mStorageReference.child("1.jpg");
+
+        pathReference.getBytes(1024*1024*50).addOnSuccessListener(new OnSuccessListener<byte[]>() {
             @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
-                    Upload upload = postSnapshot.getValue(Upload.class);
-                    mUploads.add(upload);
-                }
-
-                mAdapter = new ImageAdapter(ImagesActivity.this, mUploads);
-
-                mRecyclerView.setAdapter(mAdapter);
-                mProgressCircle.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-                Toast.makeText(ImagesActivity.this, databaseError.getMessage(), Toast.LENGTH_SHORT).show();
-                mProgressCircle.setVisibility(View.INVISIBLE);
+            public void onSuccess(byte[] bytes) {
+                
             }
         });
     }

@@ -30,6 +30,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -44,11 +46,9 @@ import java.io.FileNotFoundException;
 public class Profile_Fragment extends Fragment {
 
     View view;
-    String userid;
     private Button mButtonChooseImage;
     private Button mButtonUpload;
     private Button mButtonShowUploads;
-    //private EditText mEditTextFileName;
     private ImageView mImageView;
     private ProgressBar mProgressBar;
     private static final int PICK_IMAGE_REQUEST = 1;
@@ -57,9 +57,12 @@ public class Profile_Fragment extends Fragment {
     private Uri mImageUri;
 
     private StorageReference mStorageRef;
-    private DatabaseReference mDatabaseRef;
 
     private StorageTask mUploadTask;
+
+    static int imageNumber = 1;
+    private FirebaseAuth mAuth;
+    private String useruid;
 
     @Nullable
     @Override
@@ -67,15 +70,16 @@ public class Profile_Fragment extends Fragment {
         view = inflater.inflate(R.layout.profile_fragment, null);
         mButtonChooseImage = view.findViewById(R.id.chooseImageButton);
         mButtonUpload = view.findViewById(R.id.uploadImageButton);
-        //view image button
         mButtonShowUploads = view.findViewById(R.id.viewUploadButton);
-        //mEditTextFileName = (EditText) view.findViewById(R.id.edit_text_file_name);
         mImageView = view.findViewById(R.id.imageView);
         mProgressBar = view.findViewById(R.id.progressBar);
+
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
-        userid = account.getId();
-        mStorageRef = FirebaseStorage.getInstance().getReference(userid);
-        mDatabaseRef = FirebaseDatabase.getInstance().getReference(userid);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        useruid = currentUser.getUid();
+        mStorageRef = FirebaseStorage.getInstance().getReference(useruid);
+        //mDatabaseRef = FirebaseDatabase.getInstance().getReference(useruid);
 
         mButtonChooseImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,7 +95,7 @@ public class Profile_Fragment extends Fragment {
             @Override
             public void onClick(View v) {
                 if (mUploadTask != null && mUploadTask.isInProgress()) {
-                    Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show(); //check if working****************8
+                    Toast.makeText(getContext(), "Upload in progress", Toast.LENGTH_SHORT).show();
                 } else {
                     uploadFile();
                 }
@@ -108,24 +112,6 @@ public class Profile_Fragment extends Fragment {
         return view;
     }
 
-    /*@Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.chooseImageButton:
-                Intent photoPickerIntent = new Intent();
-                photoPickerIntent.setType("image/*");
-                photoPickerIntent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(photoPickerIntent, PICK_IMAGE_REQUEST);
-                break;
-
-            case R.id.uploadImageButton:
-                break;
-
-            case R.id.viewUploadButton:
-                break;
-        }
-    }*/
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -138,40 +124,6 @@ public class Profile_Fragment extends Fragment {
         }
     }
 
-    /*@Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1)
-            if (resultCode == Activity.RESULT_OK) {
-                Uri selectedImage = data.getData();
-
-                String filePath = getPath(selectedImage);
-                String file_extn = filePath.substring(filePath.lastIndexOf(".") + 1);
-                image_name_tv.setText(filePath);
-
-                try {
-                    if (file_extn.equals("img") || file_extn.equals("jpg") || file_extn.equals("jpeg") || file_extn.equals("gif") || file_extn.equals("png")) {
-                        //FINE
-                    } else {
-                        //NOT IN REQUIRED FORMAT
-                    }
-                } catch (FileNotFoundException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                }
-            }
-    }
-
-    public String getPath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        column_index = cursor
-                .getColumnIndexOrThrow(MediaColumns.DATA);
-        cursor.moveToFirst();
-        imagePath = cursor.getString(column_index);
-
-        return cursor.getString(column_index);
-    }*/
 
     private String getFileExtension(Uri uri) {
         ContentResolver cR = getActivity().getContentResolver();
@@ -181,9 +133,9 @@ public class Profile_Fragment extends Fragment {
 
     private void uploadFile() {
         if (mImageUri != null) {
-            StorageReference fileReference = mStorageRef.child(System.currentTimeMillis()
+            StorageReference fileReference = mStorageRef.child(imageNumber
                     + "." + getFileExtension(mImageUri));
-
+            imageNumber++;
             mUploadTask = fileReference.putFile(mImageUri)
                     .addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
@@ -194,16 +146,16 @@ public class Profile_Fragment extends Fragment {
                                 public void run() {
                                     mProgressBar.setProgress(0);
                                 }
-                            }, 2000);
+                            }, 1000);
 
                             Toast.makeText(getActivity().getApplicationContext(), "Upload successful", Toast.LENGTH_LONG).show();
                             Task<Uri> urlTask = taskSnapshot.getStorage().getDownloadUrl();
-                            while (!urlTask.isSuccessful());
-                            Uri downloadUrl = urlTask.getResult();
-                            final String sdownload_url = String.valueOf(downloadUrl);
-                            Upload upload = new Upload(sdownload_url);
-                            String uploadId = mDatabaseRef.push().getKey();
-                            mDatabaseRef.child(uploadId).setValue(upload);
+                            //while (!urlTask.isSuccessful());
+                            //Uri downloadUrl = urlTask.getResult();
+                            //final String sdownload_url = String.valueOf(downloadUrl);
+                            //Upload upload = new Upload(sdownload_url);
+                            //String uploadId = mDatabaseRef.push().getKey();
+                            //mDatabaseRef.child(uploadId).setValue(upload);
                         }
                     })
                     .addOnFailureListener(new OnFailureListener() {
@@ -226,7 +178,15 @@ public class Profile_Fragment extends Fragment {
 
     private void openImagesActivity() {
         Intent intent = new Intent(getActivity().getApplicationContext(), ImagesActivity.class);
-        intent.putExtra("userid",userid);
+        intent.putExtra("userid",useruid);
         startActivity(intent);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        useruid = currentUser.getUid();
     }
 }
