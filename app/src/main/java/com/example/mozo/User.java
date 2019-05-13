@@ -24,7 +24,8 @@ import java.util.ArrayList;
         "max_range",
         "interested_gender",
         "pagination",
-        "que"
+        "que",
+        "image_url"
 })
 
 public class User implements Serializable {
@@ -76,10 +77,18 @@ public class User implements Serializable {
 
     @JsonProperty("que")
     private ArrayList<String> que;
+
+    @JsonProperty("image_url")
+    private ArrayList<String> image_url;
+
     public User() {
     }
 
-    public User(String name, String username, String gender, String email, String dob, String age, String status, String lat, String lng, String last_active, String min_age, String max_age, String max_range, String interested_gender, String pagination, ArrayList<String> que) {
+    public User(String name){
+        this.name = name;
+    }
+
+    public User(String name, String username, String gender, String email, String dob, String age, String status, String lat, String lng, String last_active, String min_age, String max_age, String max_range, String interested_gender, String pagination, ArrayList<String> que, ArrayList<String> image_url) {
         this.name = name;
         this.username = username;
         this.gender = gender;
@@ -96,6 +105,7 @@ public class User implements Serializable {
         this.interested_gender = interested_gender;
         this.pagination = pagination;
         this.que = que;
+        this.image_url = image_url;
     }
 
     public String getName() {
@@ -234,6 +244,14 @@ public class User implements Serializable {
         this.que = que;
     }
 
+    public ArrayList<String> getImage_url() {
+        return image_url;
+    }
+
+    public void setImage_url(ArrayList<String> image_url) {
+        this.image_url = image_url;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -253,6 +271,7 @@ public class User implements Serializable {
                 ", interested_gender='" + interested_gender + '\'' +
                 ", pagination='" + pagination + '\'' +
                 ", que=" + que +
+                ", image_url=" + image_url +
                 '}';
     }
 }

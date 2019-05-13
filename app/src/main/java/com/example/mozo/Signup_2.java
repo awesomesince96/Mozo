@@ -3,6 +3,7 @@ package com.example.mozo;
 import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
@@ -48,6 +49,8 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener,
     APIServices apiServices = new APIServices();
     LocationManager locationManager;
     LocationListener locationListener;
+    SharedPreferences sharedPreferences;
+    SharedPreferences.Editor prefsEditor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener,
         context = getApplicationContext();
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
+        sharedPreferences = getSharedPreferences("s_p",MODE_PRIVATE);
+        prefsEditor = sharedPreferences.edit();
 
         getLocation();
 
@@ -129,13 +134,19 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener,
         switch (view.getId()){
             case R.id.btn_signup2_next:
                 setModel();
-                if(user.getLat() != null){
+//                if(user.getLat() != null){
+                    user.setPagination("0");
+                    Gson gson = new Gson();
+                    String json = gson.toJson(user);
+                    prefsEditor.putString("user", json);
+                    prefsEditor.putString("id",id);
+                    prefsEditor.apply();
                     apiServices.createUser(context,id,user);
                     Intent intent = new Intent(Signup_2.this, CentralActivity.class);
                     startActivity(intent);
-                }else{
-                    Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
-                }
+//                }else{
+//                    Toast.makeText(getApplicationContext(), "Please Turn On Your Location", Toast.LENGTH_LONG).show();
+//                }
 
                 break;
         }

@@ -19,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".Signup_2"></activity>
+        <activity android:name=".EditProfile"></activity>
+        <activity android:name=".Signup_2" />
         <activity android:name=".Signup_1" />
         <activity android:name=".ImagesActivity" />
         <activity android:name=".APIActivity" />

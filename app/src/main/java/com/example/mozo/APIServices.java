@@ -21,7 +21,6 @@ public class APIServices {
 
     private Boolean exist = true;
 
-
     public Boolean checkUsername(Context context, User user) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Globals.url);
@@ -132,6 +131,44 @@ public class APIServices {
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("MYTAG", error.toString());
+                    }
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
+    }
+
+    public void getPeople(Context context,String id, User user) {
+//        String url = "http://192.168.0.8:8080/api/saveUser";
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Globals.url);
+        stringBuilder.append("api/Explore");
+        String url = stringBuilder.toString();
+        JSONObject jsonBody = new JSONObject();
+        Gson gson = new Gson();
+        String userjson = gson.toJson(user);
+        try {
+            jsonBody.put("id", id);
+            jsonBody.put("user", userjson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e("MYTAG", "___FINAL__");
+        Log.e("MYTAG", jsonBody.toString());
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("MYTAG",response.toString());
                     }
                 },
                 new Response.ErrorListener() {

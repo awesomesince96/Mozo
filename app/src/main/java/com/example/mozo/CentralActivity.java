@@ -1,15 +1,21 @@
 package com.example.mozo;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
+
+import com.google.gson.Gson;
 
 public class CentralActivity extends AppCompatActivity implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     private final int REQUEST_PERMISSION=0;
+    SharedPreferences sharedPreferences;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +24,13 @@ public class CentralActivity extends AppCompatActivity implements BottomNavigati
 
         BottomNavigationView navigation = findViewById(R.id.navigation);
         navigation.setOnNavigationItemSelectedListener(this);
+        sharedPreferences = getSharedPreferences("s_p",MODE_PRIVATE);
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("user", null);
+        String json_id = sharedPreferences.getString("id", null);
+        User obj = gson.fromJson(json, User.class);
+        Log.e("MYTAG","PARENT: "+json_id+obj.toString());
+
     }
 
     private boolean loadFragment(Fragment fragment){
