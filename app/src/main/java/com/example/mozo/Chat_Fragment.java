@@ -27,6 +27,8 @@ public class Chat_Fragment extends Fragment {
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestEmail()
                 .build();
+        ((CentralActivity) getActivity())
+                .setActionBarTitle("Matches");
         mGoogleSignInClient = GoogleSignIn.getClient(getActivity().getApplicationContext(), gso);
         textView = view.findViewById(R.id.textViewChat);
         GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(getActivity().getApplicationContext());
