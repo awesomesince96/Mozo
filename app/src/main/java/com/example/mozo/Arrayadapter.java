@@ -16,6 +16,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -51,8 +52,9 @@ public class Arrayadapter extends ArrayAdapter<User> {
     public void getUsers(Context context){
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(Globals.url);
-        stringBuilder.append("api/getProfiles");
+        stringBuilder.append("api/Explore");
         String url = stringBuilder.toString();
+
         JSONObject jsonBody = new JSONObject();
         try {
             jsonBody.put("field", "gender");
@@ -70,7 +72,7 @@ public class Arrayadapter extends ArrayAdapter<User> {
                     @Override
                     public void onResponse(JSONObject response) {
                         Log.e("MYTAG",response.toString());
-
+                        Gson gson = new Gson();
                         User_Wrapper user_wrapper = gson.fromJson(response.toString(), User_Wrapper.class);
                         Log.e("MYTAG",user_wrapper.toString());
                     }
