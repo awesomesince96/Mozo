@@ -34,7 +34,6 @@ public class Arrayadapter extends ArrayAdapter<User> {
 
     public View getView (int position, View convertView, ViewGroup parent){
         User user_item = getItem(position);
-        getUsers(getContext());
         if(convertView == null){
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.items, parent, false);
         }
@@ -43,47 +42,16 @@ public class Arrayadapter extends ArrayAdapter<User> {
         ImageView image = (ImageView) convertView.findViewById(R.id.image_swipe);
         String url = "https://firebasestorage.googleapis.com/v0/b/mozo-1ddd9.appspot.com/o/nHGSWUJKzvXIyPuKr43Qb6nkMmZ2%2F1.jpg?alt=media&token=cd7b07a4-000e-43f1-938e-8d01c2aa443b";
         name.setText(user_item.getName());
-        Picasso.get().load(user_item.getImage_url().get(0)).placeholder(R.mipmap.pic).into(image);
+        if(user_item.getImage_url()!=null){
+            Picasso.get().load(user_item.getImage_url().get(0)).into(image);
+        }else{
+            Picasso.get().load(R.mipmap.ic_launcher).into(image);
+        }
+
 
         return  convertView;
 
     }
 
-    public void getUsers(Context context){
-        StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(Globals.url);
-        stringBuilder.append("api/Explore");
-        String url = stringBuilder.toString();
 
-        JSONObject jsonBody = new JSONObject();
-        try {
-            jsonBody.put("field", "gender");
-            jsonBody.put("value", "1");
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        Log.e("MYTAG", jsonBody.toString());
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
-        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
-                Request.Method.POST,
-                url,
-                jsonBody,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-                        Log.e("MYTAG",response.toString());
-                        Gson gson = new Gson();
-                        User_Wrapper user_wrapper = gson.fromJson(response.toString(), User_Wrapper.class);
-                        Log.e("MYTAG",user_wrapper.toString());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("MYTAG", error.toString());
-                    }
-                }
-        );
-        requestQueue.add(jsonObjectRequest);
-    }
 }

@@ -135,7 +135,7 @@ public class Signup_2 extends AppCompatActivity implements View.OnClickListener,
             case R.id.btn_signup2_next:
                 setModel();
 //                if(user.getLat() != null){
-                    user.setPagination("0");
+                    user.setPagination("1");
                     Gson gson = new Gson();
                     String json = gson.toJson(user);
                     prefsEditor.putString("user", json);

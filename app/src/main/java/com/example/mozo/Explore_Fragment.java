@@ -15,10 +15,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.lorentzos.flingswipe.SwipeFlingAdapterView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static android.content.Context.MODE_PRIVATE;
@@ -45,7 +55,6 @@ public class Explore_Fragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.explore_fragment, null);
-
         getPeople();
         ((CentralActivity) getActivity())
                 .setActionBarTitle("Explore");
@@ -55,12 +64,13 @@ public class Explore_Fragment extends Fragment {
         rowItems = new ArrayList<User>();
 
         rowItems.add(new User("Krishna"));
-        rowItems.add(new User("Nitu"));
-        rowItems.add(new User("Ankita"));
-        rowItems.add(new User("Trugrits"));
-        rowItems.add(new User("Enstien"));
-        rowItems.add(new User("Transit"));
-        rowItems.add(new User("Commons"));
+//        rowItems.add(new User("Nitu"));
+//        rowItems.add(new User("Ankita"));
+//        rowItems.add(new User("Trugrits"));
+//        rowItems.add(new User("Enstien"));
+//        rowItems.add(new User("Transit"));
+//        rowItems.add(new User("Commons"));
+        getUsers(getContext(),id,user);
 
 //        al.add("php");
 //        al.add("c");
@@ -142,8 +152,50 @@ public class Explore_Fragment extends Fragment {
         id = sharedPreferences.getString("id","");
         Log.e("MYTAG",id);
 
-        apiServices = new APIServices();
-        apiServices.getPeople(getContext(), id, user);
+//        apiServices = new APIServices();
+//        apiServices.getPeople(getContext(), id, user);
+
+    }
+
+    public void getUsers(Context context,String id, User user){
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(Globals.url);
+        stringBuilder.append("api/Explore");
+        String url = stringBuilder.toString();
+
+        JSONObject jsonBody = new JSONObject();
+        String userjson = gson.toJson(user);
+        try {
+            jsonBody.put("id", id);
+            jsonBody.put("user", userjson);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.e("MYTAG", jsonBody.toString());
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
+        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(
+                Request.Method.POST,
+                url,
+                jsonBody,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.e("MYTAG",response.toString());
+                        Gson gson = new Gson();
+                        User_Wrapper user_wrapper = gson.fromJson(response.toString(), User_Wrapper.class);
+                        rowItems.addAll((Collection<? extends User>) user_wrapper);
+                        Log.e("MYTAG",user_wrapper.toString());
+                        Log.e("MYTAG",rowItems.toString());
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("MYTAG", error.toString());
+                    }
+                }
+        );
+        requestQueue.add(jsonObjectRequest);
     }
 
 }
